@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "aq-admin": {
+      "hosting": {
+        "aq-admin": [
+          "aq-admin"
+        ]
+      }
+    }
+  }
+}
