@@ -78,35 +78,66 @@
     flex-direction: row;
   "
 >
-  <mat-card style="width: 80%; ">
+  <mat-card style="width: 80%">
     <mat-card-header>
       <mat-card-title>Sign In</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-
       <form #form="ngForm" autocomplete="off">
-        <mat-form-field style="width: 100%;" appearance="fill">
+        <mat-form-field style="width: 100%" appearance="fill">
           <mat-label>Email</mat-label>
-          <input email required ngModel name="email" type="email" matInput placeholder="Ex. pat@example.com">
+          <input
+            email
+            required
+            ngModel
+            name="email"
+            type="email"
+            matInput
+            placeholder="Ex. pat@example.com"
+          />
           <mat-hint>Please provide valid email ID</mat-hint>
           <mat-error>Please provide valid email ID</mat-error>
         </mat-form-field>
-        <mat-form-field style="width: 100%;" appearance="fill">
+        <mat-form-field style="width: 100%" appearance="fill">
           <mat-label>Password</mat-label>
-          <input required ngModel minlength="6" name="password" type="password" matInput placeholder="Password">
+          <input
+            required
+            ngModel
+            minlength="6"
+            name="password"
+            type="password"
+            matInput
+            placeholder="Password"
+          />
           <mat-hint>Password must be at least 6 characters</mat-hint>
           <mat-error>Password must be at least 6 characters</mat-error>
         </mat-form-field>
       </form>
     </mat-card-content>
     <mat-card-actions>
-      <div style="display: flex;justify-content: flex-end;padding-right: 16px;padding-bottom: 16px;">
+      <div
+        style="
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 16px;
+          padding-bottom: 16px;
+        "
+      >
         <button mat-raised-button>Forgot Password?</button>
         <button mat-raised-button color="warn">Login with Google</button>
-        <button mat-raised-button color="primary">Login</button><br>
+        <button mat-raised-button color="primary">Login</button><br />
       </div>
-      <div style="display: flex;justify-content: flex-end;padding-right: 16px;padding-bottom: 16px;">
-        <a mat-button><span>Don't have an account?<span>Sign Up</span></span></a>
+      <div
+        style="
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 16px;
+          padding-bottom: 16px;
+        "
+      >
+        <a mat-button
+          ><span>Don't have an account?<span>Sign Up</span></span></a
+        >
       </div>
     </mat-card-actions>
   </mat-card>
