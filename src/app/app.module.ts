@@ -18,8 +18,14 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
+import { NavigationComponent } from './navigation/navigation.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, SignInComponent],
+  declarations: [AppComponent, DashboardComponent, SignInComponent, NavigationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -38,6 +44,11 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
     MatCardModule,
     MatInputModule,
     MatButtonModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
