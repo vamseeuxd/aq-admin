@@ -1,1 +1,5 @@
 <app-navigation></app-navigation>
+<div *ngIf="busyIndicator.isBusyIndicator()" class="d-flex fixed-top vw-100 vh-100 flex-column justify-content-center align-items-center" style="background-color: rgba(255, 255, 255, 0.5);">
+  <mat-spinner></mat-spinner>
+  <h4>Please wait..</h4>
+</div>

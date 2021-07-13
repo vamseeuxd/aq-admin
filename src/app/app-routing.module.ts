@@ -1,3 +1,5 @@
+import { PHSensorsComponent } from './ph-sensors/ph-sensors.component';
+import { ProjectsComponent } from './projects/projects.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { NgModule } from '@angular/core';
@@ -9,6 +11,7 @@ import {
   redirectUnauthorizedTo,
   redirectLoggedInTo,
 } from '@angular/fire/auth-guard';
+import { PondsComponent } from './ponds/ponds.component';
 
 // Import all the components for which navigation service has to be activated
 const adminOnly = () => hasCustomClaim('admin');
@@ -29,10 +32,22 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },
+  {
+    path: 'projects',
+    component: ProjectsComponent,
+  },
+  {
+    path: 'ponds',
+    component: PondsComponent,
+  },
+  {
+    path: 'ph',
+    component: PHSensorsComponent,
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

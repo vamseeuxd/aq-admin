@@ -1,0 +1,118 @@
+<div class="container-fluid">
+  <h1 class="mt-2 mb-1">Projects</h1>
+  <ul class="list-group bg-white mat-elevation-z2 rounded-0">
+    <ul class="list-group m-1 mt-3 mx-3 rounded-0">
+      <li class="list-group-item px-2 border-0 mat-elevation-z2 rounded-0">
+        <div class="input-group rounded-0">
+          <input
+            type="text"
+            class="form-control rounded-0"
+            (keyup.enter)="addProject(newProjectNameInput)"
+            #newProjectNameInput
+            [disabled]="editItemId"
+            placeholder="New Project Name"
+          />
+          <button [disabled]="editItemId" (click)="addProject(newProjectNameInput)" class="btn btn-secondary rounded-0" type="button">Add</button>
+        </div>
+      </li>
+
+      <ul
+        class="list-group mt-2 mb-1 border-0 mat-elevation-z2 rounded-0"
+        style="
+          max-height: calc(100vh - 200px);
+          height: calc(100vh - 200px);
+          overflow-y: auto;
+        "
+      >
+        <li
+          *ngFor="let project of projects"
+          class="
+            list-group-item
+            border-0
+            mat-elevation-z2
+            mb-3
+            px-2
+            d-flex
+            justify-content-between
+            align-items-center
+          "
+        >
+          <!-- Show Project, Edit Button and Delete Button -->
+          <div [hidden]="editItemId == project.id" class="w-100">
+            <div
+              class="
+                input-group
+                d-flex
+                justify-content-between
+                align-items-center
+              "
+            >
+              <input
+                disabled
+                [ngModel]="project.name"
+                type="text"
+                class="form-control bg-white border-white"
+                placeholder="Project Name to Update"
+              />
+              <div>
+                <button
+                  [disabled]="editItemId"
+                  (click)="deleteProject(project, deleteConfirmation)"
+                  class="btn btn-danger btn-sm me-1 mat-elevation-z2"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+                <button
+                  [disabled]="editItemId"
+                  (click)="editClick(editProjectInput, project)"
+                  class="btn btn-warning btn-sm mat-elevation-z2"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Show Project, Save Button and Close Button -->
+          <div [hidden]="editItemId != project.id" class="w-100">
+            <div
+              class="
+                input-group
+                d-flex
+                justify-content-between
+                align-items-center
+              "
+            >
+              <input
+                #editProjectInput
+                [ngModel]="project.name"
+                type="text"
+                class="form-control"
+                (keyup.esc)="editItemId = ''"
+                placeholder="Project Name to Update"
+              />
+              <div>
+                <button class="btn btn-primary btn-sm me-1 ms-2">
+                  <i class="fa fa-save"></i>
+                </button>
+                <button (click)="editItemId = ''" class="btn btn-dark btn-sm">
+                  <i class="fa fa-times mx-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+</div>
+
+<ng-template #deleteConfirmation>
+  <h4 mat-dialog-title>Are you sure!Do you want to delete Project?</h4>
+  <div mat-dialog-actions>
+    <div class="d-flex w-100">
+      <button mat-raised-button color="primary"  [mat-dialog-close]="'Yes Click'" class="ms-auto">Yes</button>
+      <button mat-raised-button class="ms-2" mat-dialog-close>No</button>
+    </div>
+  </div>
+</ng-template>

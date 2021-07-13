@@ -1,3 +1,4 @@
+import { BusyIndicatorService } from './shared/busy-indicator/busy-indicator.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'aq-admin';
+  constructor(public busyIndicator: BusyIndicatorService) {}
 }
