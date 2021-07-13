@@ -123,6 +123,45 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       });
   }
 
+  saveProject(
+    project: Project,
+    deleteConfirmation: any,
+    inputText: HTMLInputElement
+  ) {
+    if (inputText.value.trim().length > 2) {
+      const dialogRef = this.dialog.open(deleteConfirmation);
+      const subscription: Subscription = dialogRef
+        .afterClosed()
+        .subscribe((result: any) => {
+          subscription.unsubscribe();
+          if (result == 'Yes Click') {
+            const saveBusyIndicatorId = this.busyIndicator.show();
+            this.angularFirestore
+              .collection('projects')
+              .doc(project.id)
+              .update({
+                name: inputText.value.trim(),
+                modifiedOn: firebase.firestore.Timestamp.now().seconds * 1000,
+              })
+              .then(() => {
+                this.editItemId = '';
+                this.busyIndicator.hide(saveBusyIndicatorId);
+                this.snackBar.open(
+                  'Project Updated Successfully',
+                  'Project Updated',
+                  {
+                    duration: 2000,
+                  }
+                );
+              });
+          }
+        });
+    } else {
+      alert('Project Name required Minimum 3 Characters');
+      inputText.focus();
+    }
+  }
+
   editClick(editProjectInput: HTMLInputElement, project: Project): void {
     if (project.id) {
       this.editItemId = project.id;

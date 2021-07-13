@@ -12,7 +12,14 @@
             [disabled]="editItemId"
             placeholder="New Project Name"
           />
-          <button [disabled]="editItemId" (click)="addProject(newProjectNameInput)" class="btn btn-secondary rounded-0" type="button">Add</button>
+          <button
+            [disabled]="editItemId"
+            (click)="addProject(newProjectNameInput)"
+            class="btn btn-secondary rounded-0"
+            type="button"
+          >
+            Add
+          </button>
         </div>
       </li>
 
@@ -89,10 +96,16 @@
                 type="text"
                 class="form-control"
                 (keyup.esc)="editItemId = ''"
+                (keyup.enter)="saveProject(project, editConfirmation, editProjectInput)"
                 placeholder="Project Name to Update"
               />
               <div>
-                <button class="btn btn-primary btn-sm me-1 ms-2">
+                <button
+                  class="btn btn-primary btn-sm me-1 ms-2"
+                  (click)="
+                    saveProject(project, editConfirmation, editProjectInput)
+                  "
+                >
                   <i class="fa fa-save"></i>
                 </button>
                 <button (click)="editItemId = ''" class="btn btn-dark btn-sm">
@@ -111,7 +124,31 @@
   <h4 mat-dialog-title>Are you sure!Do you want to delete Project?</h4>
   <div mat-dialog-actions>
     <div class="d-flex w-100">
-      <button mat-raised-button color="primary"  [mat-dialog-close]="'Yes Click'" class="ms-auto">Yes</button>
+      <button
+        mat-raised-button
+        color="primary"
+        [mat-dialog-close]="'Yes Click'"
+        class="ms-auto"
+      >
+        Yes
+      </button>
+      <button mat-raised-button class="ms-2" mat-dialog-close>No</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editConfirmation>
+  <h4 mat-dialog-title>Are you sure!Do you want to Edit Project?</h4>
+  <div mat-dialog-actions>
+    <div class="d-flex w-100">
+      <button
+        mat-raised-button
+        color="primary"
+        [mat-dialog-close]="'Yes Click'"
+        class="ms-auto"
+      >
+        Yes
+      </button>
       <button mat-raised-button class="ms-2" mat-dialog-close>No</button>
     </div>
   </div>
