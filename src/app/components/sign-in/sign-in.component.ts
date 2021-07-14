@@ -1,4 +1,4 @@
-import { AuthService } from './../../shared/services/auth.service';
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthProvider } from 'ngx-auth-firebaseui';
 
@@ -9,12 +9,13 @@ import { AuthProvider } from 'ngx-auth-firebaseui';
 })
 export class SignInComponent implements OnInit {
   providers = AuthProvider;
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {}
 
   printUser($event: any) {
     console.log($event);
+    this.router.navigate(['dashboard'])
   }
   printError($event: any) {
     console.log($event);
