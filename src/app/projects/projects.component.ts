@@ -29,6 +29,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   editItemId = '';
   projects: Project[] = [];
   getSubscription: Subscription | undefined;
+  userSubscription: Subscription | undefined;
 
   constructor(
     private angularFireAuth: AngularFireAuth,
@@ -39,58 +40,94 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.getUserDetails();
+  }
+
+  getUserDetails(): void {
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
     const userBusyIndicatorId = this.busyIndicator.show();
-    this.angularFireAuth.user.subscribe((user) => {
+    this.userSubscription = this.angularFireAuth.user.subscribe((user) => {
       if (user) {
         this.user = user;
         this.uid = user.uid;
+        this.getProjectsList();
       }
       this.busyIndicator.hide(userBusyIndicatorId);
     });
+  }
 
+  getProjectsList(): void {
+    if (this.getSubscription && !this.getSubscription.closed) {
+      this.getSubscription.unsubscribe();
+    }
     const getProjectsBusyIndicatorId = this.busyIndicator.show();
     this.getSubscription = this.angularFirestore
       .collection<Project>('projects', (ref) => {
-        return ref.where('deleted', '==', false).orderBy('createdOn', 'desc');
+        return ref
+          .where('deleted', '==', false)
+          .where('uid', '==', this.uid)
+          .orderBy('createdOn', 'desc');
       })
       .valueChanges({ idField: 'id' })
-      .subscribe((projects) => {
-        this.projects = projects;
-        setTimeout(() => {
+      .subscribe(
+        (projects) => {
+          this.projects = projects;
+          setTimeout(() => {
+            this.busyIndicator.hide(getProjectsBusyIndicatorId);
+          }, 200);
+        },
+        (error) => {
+          this.snackBar.open(
+            'Error while getting Projects List (' + error.message + ')',
+            'Error',
+            { duration: 4000 }
+          );
           this.busyIndicator.hide(getProjectsBusyIndicatorId);
-        }, 200);
-      });
+        }
+      );
   }
 
   ngOnDestroy(): void {
-    this.getSubscription?.unsubscribe();
+    if (this.getSubscription && !this.getSubscription.closed) {
+      this.getSubscription.unsubscribe();
+    }
+    if (this.userSubscription && !this.userSubscription.closed) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   addProject(inputText: HTMLInputElement): void {
     if (inputText.value.trim().length > 2) {
-      const addBusyIndicatorId = this.busyIndicator.show();
-      const project: Project = {
-        uid: this.uid,
-        name: inputText.value.trim(),
-        createdOn: firebase.firestore.Timestamp.now().seconds * 1000,
-        modifiedOn: firebase.firestore.Timestamp.now().seconds * 1000,
-        deleted: false,
-        address: '',
-      };
-      this.angularFirestore
-        .collection('projects')
-        .add(project)
-        .then(() => {
-          this.busyIndicator.hide(addBusyIndicatorId);
-          inputText.value = '';
-          this.snackBar.open(
-            'New Project added Successfully',
-            'Project Added',
-            {
-              duration: 2000,
-            }
-          );
-        });
+      if (this.isUniqueProjectName(inputText.value)) {
+        const addBusyIndicatorId = this.busyIndicator.show();
+        const project: Project = {
+          uid: this.uid,
+          name: inputText.value.trim(),
+          createdOn: firebase.firestore.Timestamp.now().seconds * 1000,
+          modifiedOn: firebase.firestore.Timestamp.now().seconds * 1000,
+          deleted: false,
+          address: '',
+        };
+        this.angularFirestore
+          .collection('projects')
+          .add(project)
+          .then(() => {
+            this.busyIndicator.hide(addBusyIndicatorId);
+            inputText.value = '';
+            this.snackBar.open(
+              'New Project added Successfully',
+              'Project Added',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      } else {
+        alert('Duplicate Project Name are not allowed');
+        inputText.focus();
+      }
     } else {
       alert('Project Name required Minimum 3 Characters');
       inputText.focus();
@@ -135,25 +172,30 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         .subscribe((result: any) => {
           subscription.unsubscribe();
           if (result == 'Yes Click') {
-            const saveBusyIndicatorId = this.busyIndicator.show();
-            this.angularFirestore
-              .collection('projects')
-              .doc(project.id)
-              .update({
-                name: inputText.value.trim(),
-                modifiedOn: firebase.firestore.Timestamp.now().seconds * 1000,
-              })
-              .then(() => {
-                this.editItemId = '';
-                this.busyIndicator.hide(saveBusyIndicatorId);
-                this.snackBar.open(
-                  'Project Updated Successfully',
-                  'Project Updated',
-                  {
-                    duration: 2000,
-                  }
-                );
-              });
+            if ((this.isUniqueProjectName(inputText.value, project.id))) {
+              const saveBusyIndicatorId = this.busyIndicator.show();
+              this.angularFirestore
+                .collection('projects')
+                .doc(project.id)
+                .update({
+                  name: inputText.value.trim(),
+                  modifiedOn: firebase.firestore.Timestamp.now().seconds * 1000,
+                })
+                .then(() => {
+                  this.editItemId = '';
+                  this.busyIndicator.hide(saveBusyIndicatorId);
+                  this.snackBar.open(
+                    'Project Updated Successfully',
+                    'Project Updated',
+                    {
+                      duration: 2000,
+                    }
+                  );
+                });
+            } else {
+              alert('Duplicate Project Name are not allowed');
+              inputText.focus();
+            }
           }
         });
     } else {
@@ -171,5 +213,14 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         editProjectInput.setSelectionRange(0, editProjectInput.value.length);
       });
     }
+  }
+
+  isUniqueProjectName(value: string, excludeId = ''): boolean {
+    return (
+      this.projects
+        .filter((project) => project.id != excludeId)
+        .map((project) => project.name.toLowerCase().trim())
+        .filter((name) => name === value.trim().toLowerCase()).length === 0
+    );
   }
 }
