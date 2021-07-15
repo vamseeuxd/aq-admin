@@ -145,7 +145,8 @@ export class PondsComponent implements OnInit, OnDestroy {
 
   addPond(inputText: HTMLInputElement, project: Project): void {
     if (inputText.value.trim().length > 2) {
-      if (this.isUniquePondName(inputText.value)) {
+      // @ts-ignore
+      if (this.isUniquePondName(inputText.value, '', project.id)) {
         const addBusyIndicatorId = this.busyIndicator.show();
         const pond: Pond = {
           uid: this.uid,
@@ -169,7 +170,7 @@ export class PondsComponent implements OnInit, OnDestroy {
             });
           });
       } else {
-        alert('Duplicate Pond Name are not allowed');
+        alert('Duplicate Pond Names are not allowed');
         inputText.focus();
       }
     } else {
@@ -212,7 +213,9 @@ export class PondsComponent implements OnInit, OnDestroy {
         .subscribe((result: any) => {
           subscription.unsubscribe();
           if (result == 'Yes Click') {
-            if (this.isUniquePondName(inputText.value, pond.id)) {
+            if (
+              this.isUniquePondName(inputText.value, pond.id, pond.projectId)
+            ) {
               const saveBusyIndicatorId = this.busyIndicator.show();
               this.angularFirestore
                 .collection('ponds')
@@ -233,7 +236,7 @@ export class PondsComponent implements OnInit, OnDestroy {
                   );
                 });
             } else {
-              alert('Duplicate Pond Name are not allowed');
+              alert('Duplicate Pond Names are not allowed');
               inputText.focus();
             }
           }
@@ -255,9 +258,10 @@ export class PondsComponent implements OnInit, OnDestroy {
     }
   }
 
-  isUniquePondName(value: string, excludeId = ''): boolean {
+  isUniquePondName(value: string, excludeId = '', projectId: string): boolean {
     return (
       this.ponds
+        .filter((pond) => pond.projectId == projectId)
         .filter((pond) => pond.id != excludeId)
         .map((pond) => pond.name.toLowerCase().trim())
         .filter((name) => name === value.trim().toLowerCase()).length === 0

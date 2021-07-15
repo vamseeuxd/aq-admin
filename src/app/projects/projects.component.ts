@@ -125,7 +125,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
             );
           });
       } else {
-        alert('Duplicate Project Name are not allowed');
+        alert('Duplicate Project Names are not allowed');
         inputText.focus();
       }
     } else {
@@ -193,7 +193,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
                   );
                 });
             } else {
-              alert('Duplicate Project Name are not allowed');
+              alert('Duplicate Project Names are not allowed');
               inputText.focus();
             }
           }
