@@ -30,6 +30,8 @@ import { PHSensorsComponent } from './ph-sensors/ph-sensors.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatSelectModule,
+    MatTabsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

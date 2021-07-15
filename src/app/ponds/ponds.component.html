@@ -1,1 +1,249 @@
-<p>ponds works!</p>
+<div class="container-fluid">
+  <ul class="list-group bg-white mat-elevation-z2 rounded-0 mt-3 pb-3">
+    <h1 class="mt-2 mb-0 ps-3">Ponds</h1>
+    <!-- <li class="list-group-item px-2 pb-0 border-0 rounded-0">
+      <mat-form-field class="w-100" appearance="fill">
+        <mat-label>Select Project</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let project of projects" [value]="project.id">
+            {{ project.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </li> -->
+
+    <mat-tab-group *ngIf="projects.length > 0">
+      <mat-tab *ngFor="let project of projects" [label]="project.name">
+        <ng-container>
+          <!-- <ul class="list-group m-1 mx-0 rounded-0">
+            <li
+              class="list-group-item px-2 border-0 mat-elevation-z2 rounded-0"
+            >
+              <div class="input-group rounded-0">
+                <input
+                  type="text"
+                  class="form-control rounded-0"
+                  (keyup.enter)="addPond(newPondNameInput)"
+                  #newPondNameInput
+                  [disabled]="editItemId"
+                  placeholder="New Pond Name for {{ project.name }}"
+                />
+                <button
+                  [disabled]="editItemId"
+                  (click)="addPond(newPondNameInput)"
+                  class="btn btn-secondary rounded-0"
+                  type="button"
+                >
+                  Add
+                </button>
+              </div>
+            </li>
+          </ul> -->
+
+          <ul
+            class="list-group mt-2 mb-1 border-0 rounded-0"
+            style="
+              max-height: calc(100vh - 200px);
+              height: calc(100vh - 200px);
+              overflow-y: auto;
+            "
+          >
+            <li
+              *ngFor="let pond of getPondsByProjectId(project)"
+              class="
+                list-group-item
+                border-0
+                mat-elevation-z2
+                mb-1
+                px-2
+                d-flex
+                justify-content-between
+                align-items-center
+              "
+            >
+              <!-- Show Pond, Edit Button and Delete Button -->
+              <div [hidden]="editItemId == pond.id" class="w-100">
+                <div
+                  class="
+                    input-group
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                  "
+                >
+                  <input
+                    disabled
+                    [ngModel]="pond.name"
+                    type="text"
+                    class="form-control bg-white border-white"
+                    placeholder="Pond Name to Update"
+                  />
+                  <div>
+                    <button
+                      [disabled]="editItemId"
+                      (click)="deletePond(pond, deleteConfirmation)"
+                      class="btn btn-danger btn-sm me-1 mat-elevation-z2"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                    <button
+                      [disabled]="editItemId"
+                      (click)="editClick(editPondInput, pond)"
+                      class="btn btn-warning btn-sm mat-elevation-z2"
+                    >
+                      <i class="fa fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Show Pond, Save Button and Close Button -->
+              <div [hidden]="editItemId != pond.id" class="w-100">
+                <div
+                  class="
+                    input-group
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                  "
+                >
+                  <input
+                    #editPondInput
+                    [ngModel]="pond.name"
+                    type="text"
+                    class="form-control"
+                    (keyup.esc)="editItemId = ''"
+                    (keyup.enter)="
+                      savePond(pond, editConfirmation, editPondInput)
+                    "
+                    placeholder="Pond Name to Update"
+                  />
+                  <div>
+                    <button
+                      class="btn btn-primary btn-sm me-1 ms-2"
+                      (click)="savePond(pond, editConfirmation, editPondInput)"
+                    >
+                      <i class="fa fa-save"></i>
+                    </button>
+                    <button
+                      (click)="editItemId = ''"
+                      class="btn btn-dark btn-sm"
+                    >
+                      <i class="fa fa-times mx-1"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <div
+              class="
+                d-flex
+                justify-content-center
+                align-items-center
+                w-100
+                h-100
+              "
+            >
+              <h4 *ngIf="getPondsByProjectId(project).length == 0" class="text-muted text-center">
+                No Ponds to show in <b>{{ project.name }}</b>
+              </h4>
+            </div>
+          </ul>
+
+          <button
+            (click)="showAddNewPondModal(addNewPond, project)"
+            mat-fab
+            color="primary"
+            role="button"
+            style="position: fixed; bottom: 40px; right: 30px"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </ng-container>
+      </mat-tab>
+    </mat-tab-group>
+
+    <div
+      *ngIf="projects.length == 0"
+      class="d-flex justify-content-center align-items-center w-100"
+      style="height: calc(100vh - 150px) !important"
+    >
+      <h4 class="text-muted text-center">
+        No Projects Found! to add new <b>Project</b>, go to
+        <button routerLink="/projects" class="btn btn-link">Projects</button>
+      </h4>
+    </div>
+  </ul>
+</div>
+
+<ng-template #deleteConfirmation>
+  <h4 mat-dialog-title>Are you sure!Do you want to delete Pond?</h4>
+  <div mat-dialog-actions>
+    <div class="d-flex w-100">
+      <button
+        mat-raised-button
+        color="primary"
+        [mat-dialog-close]="'Yes Click'"
+        class="ms-auto"
+      >
+        Yes
+      </button>
+      <button mat-raised-button class="ms-2" mat-dialog-close>No</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editConfirmation>
+  <h4 mat-dialog-title>Are you sure!Do you want to Edit Pond?</h4>
+  <div mat-dialog-actions>
+    <div class="d-flex w-100">
+      <button
+        mat-raised-button
+        color="primary"
+        [mat-dialog-close]="'Yes Click'"
+        class="ms-auto"
+      >
+        Yes
+      </button>
+      <button mat-raised-button class="ms-2" mat-dialog-close>No</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #addNewPond let-data>
+  <h4 mat-dialog-title>Add New Pond in <b>{{ data?.name }}</b> Poject</h4>
+  <mat-dialog-content>
+    <div class="input-group rounded-0">
+      <input
+        type="text"
+        class="form-control rounded-0"
+        (keyup.enter)="addPond(newPondNameInput, data)"
+        #newPondNameInput
+        [disabled]="editItemId"
+        placeholder="New Pond Name"
+      />
+      <!-- <button
+        [disabled]="editItemId"
+        (click)="addPond(newPondNameInput)"
+        class="btn btn-secondary rounded-0"
+        type="button"
+      >
+        Add
+      </button> -->
+    </div>
+  </mat-dialog-content>
+  <div mat-dialog-actions>
+    <div class="d-flex w-100">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addPond(newPondNameInput, data)"
+        class="ms-auto"
+      >
+        Add
+      </button>
+      <button mat-raised-button class="ms-2" mat-dialog-close>Cancel</button>
+    </div>
+  </div>
+</ng-template>
